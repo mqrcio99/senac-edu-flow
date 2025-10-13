@@ -1,13 +1,29 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card } from "@/components/ui/card";
-import { BookOpen, Users, Award, TrendingUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { BookOpen, Users, Award, TrendingUp, GraduationCap } from "lucide-react";
 
 const Dashboard = () => {
+  const { user, getMyEnrollments } = useAuth();
+  const navigate = useNavigate();
+  const myEnrollments = getMyEnrollments();
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/auth");
+    }
+  }, [user, navigate]);
+
+  if (!user) return null;
+
   const stats = [
-    { label: "Cursos Matriculados", value: "3", icon: BookOpen, color: "text-primary" },
-    { label: "Turmas Ativas", value: "2", icon: Users, color: "text-secondary" },
-    { label: "Certificados", value: "5", icon: Award, color: "text-primary" },
+    { label: "Cursos Matriculados", value: myEnrollments.length.toString(), icon: BookOpen, color: "text-primary" },
+    { label: "Turmas Ativas", value: myEnrollments.filter(e => e.status === 'active').length.toString(), icon: Users, color: "text-secondary" },
+    { label: "Certificados", value: myEnrollments.filter(e => e.status === 'completed').length.toString(), icon: Award, color: "text-primary" },
     { label: "Progresso Médio", value: "67%", icon: TrendingUp, color: "text-secondary" },
   ];
 
@@ -48,38 +64,64 @@ const Dashboard = () => {
             ))}
           </div>
 
-          {/* Coming Soon Message */}
-          <Card className="p-12 text-center">
-            <div className="max-w-2xl mx-auto">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-light rounded-full mb-6">
-                <BookOpen className="h-8 w-8 text-primary" />
+          {/* My Enrollments */}
+          <Card className="p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 rounded-lg bg-primary/10">
+                <GraduationCap className="h-6 w-6 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold text-card-foreground mb-4">
-                Dashboard em Desenvolvimento
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Estamos trabalhando para trazer funcionalidades completas de gestão acadêmica, 
-                controle de frequência, notas e certificações. Em breve você terá acesso a:
-              </p>
-              <ul className="mt-6 space-y-2 text-left max-w-md mx-auto">
-                <li className="flex items-center gap-2 text-muted-foreground">
-                  <div className="h-2 w-2 bg-secondary rounded-full" />
-                  Acompanhamento de frequência em tempo real
-                </li>
-                <li className="flex items-center gap-2 text-muted-foreground">
-                  <div className="h-2 w-2 bg-secondary rounded-full" />
-                  Visualização de notas e desempenho
-                </li>
-                <li className="flex items-center gap-2 text-muted-foreground">
-                  <div className="h-2 w-2 bg-secondary rounded-full" />
-                  Emissão automática de certificados
-                </li>
-                <li className="flex items-center gap-2 text-muted-foreground">
-                  <div className="h-2 w-2 bg-secondary rounded-full" />
-                  Gestão completa de matrículas
-                </li>
-              </ul>
+              <div>
+                <h2 className="text-2xl font-bold text-card-foreground">
+                  Minhas Matrículas
+                </h2>
+                <p className="text-muted-foreground">
+                  Acompanhe seus cursos matriculados
+                </p>
+              </div>
             </div>
+
+            {myEnrollments.length === 0 ? (
+              <div className="text-center py-12">
+                <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+                <p className="text-muted-foreground mb-4">
+                  Você ainda não está matriculado em nenhum curso.
+                </p>
+                <button
+                  onClick={() => navigate("/cursos")}
+                  className="text-primary hover:underline font-medium"
+                >
+                  Ver cursos disponíveis
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {myEnrollments.map((enrollment) => (
+                  <Card key={enrollment.id} className="p-6 hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                          {enrollment.courseName}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          Matriculado em: {enrollment.enrolledAt}
+                        </p>
+                        <Badge 
+                          variant={enrollment.status === 'active' ? 'default' : 'secondary'}
+                          className="capitalize"
+                        >
+                          {enrollment.status === 'active' ? 'Ativo' : 
+                           enrollment.status === 'completed' ? 'Concluído' : 'Cancelado'}
+                        </Badge>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary mb-1">67%</div>
+                        <div className="text-xs text-muted-foreground">Progresso</div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </Card>
         </div>
       </main>

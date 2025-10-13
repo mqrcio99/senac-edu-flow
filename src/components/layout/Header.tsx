@@ -1,17 +1,23 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, GraduationCap, User } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, GraduationCap, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const navItems = [
     { name: "Início", path: "/" },
     { name: "Cursos", path: "/cursos" },
-    { name: "Turmas", path: "/turmas" },
-    { name: "Matrículas", path: "/matriculas" },
     { name: "Dashboard", path: "/dashboard" },
   ];
 
@@ -50,13 +56,28 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="outline" size="sm" className="gap-2">
-              <User className="h-4 w-4" />
-              Login
-            </Button>
-            <Button size="sm" className="btn-secondary gap-2">
-              Matricule-se
-            </Button>
+            {user ? (
+              <>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full">
+                  <User className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">{user.name}</span>
+                </div>
+                <Button onClick={handleLogout} variant="outline" size="sm">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sair
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => navigate("/auth")} variant="outline" size="sm" className="gap-2">
+                  <User className="h-4 w-4" />
+                  Login
+                </Button>
+                <Button onClick={() => navigate("/auth")} size="sm" className="btn-secondary gap-2">
+                  Matricule-se
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -92,13 +113,28 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 mt-4 px-4">
-                <Button variant="outline" className="w-full gap-2">
-                  <User className="h-4 w-4" />
-                  Login
-                </Button>
-                <Button className="w-full btn-secondary">
-                  Matricule-se
-                </Button>
+                {user ? (
+                  <>
+                    <div className="p-3 bg-muted rounded-lg mb-2">
+                      <p className="text-sm font-medium">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <Button onClick={handleLogout} variant="outline" className="w-full">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sair
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button onClick={() => navigate("/auth")} variant="outline" className="w-full gap-2">
+                      <User className="h-4 w-4" />
+                      Login
+                    </Button>
+                    <Button onClick={() => navigate("/auth")} className="w-full btn-secondary">
+                      Matricule-se
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>

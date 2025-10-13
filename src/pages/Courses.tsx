@@ -1,13 +1,49 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CourseCard from "@/components/home/CourseCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { Search, Filter } from "lucide-react";
 
 const Courses = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { user, enroll } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleEnroll = (courseId: string, courseName: string) => {
+    if (!user) {
+      toast({
+        title: "Login necessário",
+        description: "Faça login para se matricular em um curso.",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    const success = enroll(courseId, courseName);
+    if (success) {
+      toast({
+        title: "Matrícula realizada!",
+        description: `Você foi matriculado no curso ${courseName}.`,
+      });
+    } else {
+      toast({
+        title: "Matrícula já existe",
+        description: "Você já está matriculado neste curso.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const allCourses = [
     {
+      id: "1",
       title: "Desenvolvimento Web Full Stack",
       description: "Aprenda a criar aplicações web completas, do front-end ao back-end, com as tecnologias mais modernas do mercado.",
       duration: "320h",
@@ -16,6 +52,7 @@ const Courses = () => {
       category: "Tecnologia",
     },
     {
+      id: "2",
       title: "Design Gráfico e UX/UI",
       description: "Domine as ferramentas e técnicas para criar designs incríveis e experiências de usuário memoráveis.",
       duration: "240h",
@@ -24,6 +61,7 @@ const Courses = () => {
       category: "Design",
     },
     {
+      id: "3",
       title: "Marketing Digital Avançado",
       description: "Estratégias completas de marketing digital, SEO, redes sociais e análise de dados para impulsionar negócios.",
       duration: "180h",
@@ -32,6 +70,7 @@ const Courses = () => {
       category: "Marketing",
     },
     {
+      id: "4",
       title: "Gestão de Projetos Ágeis",
       description: "Metodologias ágeis, Scrum, Kanban e ferramentas essenciais para gerenciar projetos com eficiência.",
       duration: "160h",
@@ -40,6 +79,7 @@ const Courses = () => {
       category: "Gestão",
     },
     {
+      id: "5",
       title: "Análise de Dados e Business Intelligence",
       description: "Transforme dados em insights valiosos. Aprenda SQL, Python, visualização de dados e mais.",
       duration: "280h",
@@ -48,6 +88,7 @@ const Courses = () => {
       category: "Dados",
     },
     {
+      id: "6",
       title: "Inglês para Negócios",
       description: "Desenvolva fluência em inglês focado no ambiente corporativo e comunicação profissional.",
       duration: "200h",
@@ -56,6 +97,12 @@ const Courses = () => {
       category: "Idiomas",
     },
   ];
+
+  const filteredCourses = allCourses.filter(course =>
+    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    course.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -80,6 +127,8 @@ const Courses = () => {
               <Input 
                 placeholder="Buscar cursos..." 
                 className="pl-10 h-12"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <Button variant="outline" className="gap-2 h-12">
@@ -90,13 +139,19 @@ const Courses = () => {
 
           {/* Courses Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {allCourses.map((course, index) => (
+            {filteredCourses.map((course, index) => (
               <div 
-                key={index} 
-                className="animate-fade-in-up"
+                key={course.id} 
+                className="animate-fade-in-up flex flex-col"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CourseCard {...course} />
+                <Button 
+                  onClick={() => handleEnroll(course.id, course.title)}
+                  className="mt-4 w-full btn-secondary"
+                >
+                  Matricular-se
+                </Button>
               </div>
             ))}
           </div>
