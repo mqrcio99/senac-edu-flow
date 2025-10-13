@@ -33,7 +33,7 @@ const Header = () => {
               <GraduationCap className="h-6 w-6 lg:h-7 lg:w-7 text-primary-foreground" />
             </div>
             <span className="font-bold text-lg lg:text-xl text-primary hidden sm:block">
-              Sistema Educacional
+              TecEdu
             </span>
           </Link>
 
