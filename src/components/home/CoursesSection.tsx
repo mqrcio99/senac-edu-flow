@@ -1,6 +1,12 @@
 import CourseCard from "./CourseCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import webDevImage from "@/assets/course-web-dev.jpg";
+import designImage from "@/assets/course-design.jpg";
+import marketingImage from "@/assets/course-marketing.jpg";
+import projectMgmtImage from "@/assets/course-project-management.jpg";
+import dataAnalysisImage from "@/assets/course-data-analysis.jpg";
+import englishImage from "@/assets/course-english.jpg";
 
 const CoursesSection = () => {
   const courses = [
@@ -11,6 +17,7 @@ const CoursesSection = () => {
       students: 1250,
       rating: 4.8,
       category: "Tecnologia",
+      image: webDevImage,
     },
     {
       title: "Design Gráfico e UX/UI",
@@ -19,6 +26,7 @@ const CoursesSection = () => {
       students: 890,
       rating: 4.9,
       category: "Design",
+      image: designImage,
     },
     {
       title: "Marketing Digital Avançado",
@@ -27,6 +35,7 @@ const CoursesSection = () => {
       students: 1500,
       rating: 4.7,
       category: "Marketing",
+      image: marketingImage,
     },
     {
       title: "Gestão de Projetos Ágeis",
@@ -35,6 +44,7 @@ const CoursesSection = () => {
       students: 720,
       rating: 4.8,
       category: "Gestão",
+      image: projectMgmtImage,
     },
     {
       title: "Análise de Dados e Business Intelligence",
@@ -43,6 +53,7 @@ const CoursesSection = () => {
       students: 980,
       rating: 4.9,
       category: "Dados",
+      image: dataAnalysisImage,
     },
     {
       title: "Inglês para Negócios",
@@ -51,6 +62,7 @@ const CoursesSection = () => {
       students: 1100,
       rating: 4.6,
       category: "Idiomas",
+      image: englishImage,
     },
   ];
 

@@ -17,14 +17,31 @@ const CourseCard = ({
   duration, 
   students, 
   rating, 
-  category 
+  category,
+  image 
 }: CourseCardProps) => {
   return (
     <div className="card-institutional overflow-hidden group cursor-pointer">
       {/* Image/Category Header */}
-      <div className="h-48 bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" />
-        <span className="text-white text-xl font-bold z-10">{category}</span>
+      <div className="h-48 relative overflow-hidden">
+        {image ? (
+          <>
+            <img 
+              src={image} 
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end justify-start p-4">
+              <span className="text-white text-sm font-semibold px-3 py-1 bg-primary/90 rounded-full">{category}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="w-full h-full bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center">
+              <span className="text-white text-xl font-bold z-10">{category}</span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Content */}

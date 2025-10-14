@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Filter } from "lucide-react";
+import webDevImage from "@/assets/course-web-dev.jpg";
+import designImage from "@/assets/course-design.jpg";
+import marketingImage from "@/assets/course-marketing.jpg";
+import projectMgmtImage from "@/assets/course-project-management.jpg";
+import dataAnalysisImage from "@/assets/course-data-analysis.jpg";
+import englishImage from "@/assets/course-english.jpg";
 
 const Courses = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,6 +56,7 @@ const Courses = () => {
       students: 1250,
       rating: 4.8,
       category: "Tecnologia",
+      image: webDevImage,
     },
     {
       id: "2",
@@ -59,6 +66,7 @@ const Courses = () => {
       students: 890,
       rating: 4.9,
       category: "Design",
+      image: designImage,
     },
     {
       id: "3",
@@ -68,6 +76,7 @@ const Courses = () => {
       students: 1500,
       rating: 4.7,
       category: "Marketing",
+      image: marketingImage,
     },
     {
       id: "4",
@@ -77,6 +86,7 @@ const Courses = () => {
       students: 720,
       rating: 4.8,
       category: "Gestão",
+      image: projectMgmtImage,
     },
     {
       id: "5",
@@ -86,6 +96,7 @@ const Courses = () => {
       students: 980,
       rating: 4.9,
       category: "Dados",
+      image: dataAnalysisImage,
     },
     {
       id: "6",
@@ -95,6 +106,7 @@ const Courses = () => {
       students: 1100,
       rating: 4.6,
       category: "Idiomas",
+      image: englishImage,
     },
   ];
 
