@@ -147,15 +147,14 @@ O projeto está configurado para deploy automático na Vercel. Qualquer push na 
 
 **Instituição**: SENAC - Tramandaí/RS  
 **Curso**: Técnico em Desenvolvimento de Sistemas  
-**Disciplina**: Planejar o Desenvolvimento de Software  
-**Professor**: Vinicius Possamai  
+**Disciplina**: Planejar o Desenvolvimento de Software   
 **Ano**: 2025
 
 ---
 
 ## 👥 Equipe de Desenvolvimento
 
-Este projeto foi desenvolvido como trabalho acadêmico pelos alunos do curso Técnico em Desenvolvimento de Sistemas do SENAC Tramandaí.
+Este projeto foi desenvolvido como trabalho acadêmico pelos alunos do curso Técnico em Desenvolvimento de Sistemas do SENAC.
 
 ---
 
@@ -169,7 +168,7 @@ Este projeto foi desenvolvido para fins educacionais como parte do curso Técnic
 
 - 🌐 **Deploy**: [https://senac-edu-flow.vercel.app/](https://senac-edu-flow.vercel.app/)
 - 📂 **Repositório**: [GitHub](#)
-- 📧 **Contato**: [Seu Email]
+- 📧 **Contato**: [applemarcio@gmail.com]
 
 ---
 
