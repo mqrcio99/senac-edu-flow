@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Clock, Users, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface CourseCardProps {
+  id: string;
   title: string;
   description: string;
   duration: string;
@@ -12,6 +14,7 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ 
+  id,
   title, 
   description, 
   duration, 
@@ -20,8 +23,13 @@ const CourseCard = ({
   category,
   image 
 }: CourseCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="card-institutional overflow-hidden group cursor-pointer">
+    <div 
+      onClick={() => navigate(`/cursos/${id}`)}
+      className="card-institutional overflow-hidden group cursor-pointer"
+    >
       {/* Image/Category Header */}
       <div className="h-48 relative overflow-hidden">
         {image ? (
@@ -70,7 +78,13 @@ const CourseCard = ({
         </div>
 
         {/* CTA */}
-        <Button className="w-full btn-primary group-hover:shadow-lg transition-all">
+        <Button 
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/cursos/${id}`);
+          }}
+          className="w-full btn-primary group-hover:shadow-lg transition-all"
+        >
           Ver Detalhes
         </Button>
       </div>

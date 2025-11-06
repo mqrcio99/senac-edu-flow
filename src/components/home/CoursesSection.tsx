@@ -1,6 +1,7 @@
 import CourseCard from "./CourseCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import webDevImage from "@/assets/course-web-dev.jpg";
 import designImage from "@/assets/course-design.jpg";
 import marketingImage from "@/assets/course-marketing.jpg";
@@ -9,8 +10,11 @@ import dataAnalysisImage from "@/assets/course-data-analysis.jpg";
 import englishImage from "@/assets/course-english.jpg";
 
 const CoursesSection = () => {
+  const navigate = useNavigate();
+  
   const courses = [
     {
+      id: "1",
       title: "Desenvolvimento Web Full Stack",
       description: "Aprenda a criar aplicações web completas, do front-end ao back-end, com as tecnologias mais modernas do mercado.",
       duration: "320h",
@@ -20,6 +24,7 @@ const CoursesSection = () => {
       image: webDevImage,
     },
     {
+      id: "2",
       title: "Design Gráfico e UX/UI",
       description: "Domine as ferramentas e técnicas para criar designs incríveis e experiências de usuário memoráveis.",
       duration: "240h",
@@ -29,6 +34,7 @@ const CoursesSection = () => {
       image: designImage,
     },
     {
+      id: "3",
       title: "Marketing Digital Avançado",
       description: "Estratégias completas de marketing digital, SEO, redes sociais e análise de dados para impulsionar negócios.",
       duration: "180h",
@@ -38,6 +44,7 @@ const CoursesSection = () => {
       image: marketingImage,
     },
     {
+      id: "4",
       title: "Gestão de Projetos Ágeis",
       description: "Metodologias ágeis, Scrum, Kanban e ferramentas essenciais para gerenciar projetos com eficiência.",
       duration: "160h",
@@ -47,6 +54,7 @@ const CoursesSection = () => {
       image: projectMgmtImage,
     },
     {
+      id: "5",
       title: "Análise de Dados e Business Intelligence",
       description: "Transforme dados em insights valiosos. Aprenda SQL, Python, visualização de dados e mais.",
       duration: "280h",
@@ -56,6 +64,7 @@ const CoursesSection = () => {
       image: dataAnalysisImage,
     },
     {
+      id: "6",
       title: "Inglês para Negócios",
       description: "Desenvolva fluência em inglês focado no ambiente corporativo e comunicação profissional.",
       duration: "200h",
@@ -94,7 +103,12 @@ const CoursesSection = () => {
         </div>
 
         <div className="text-center">
-          <Button size="lg" variant="outline" className="gap-2 group">
+          <Button 
+            size="lg" 
+            variant="outline" 
+            className="gap-2 group"
+            onClick={() => navigate("/cursos")}
+          >
             Ver Todos os Cursos
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
