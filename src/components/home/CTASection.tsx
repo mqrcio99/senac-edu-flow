@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CTASection = () => {
+  const navigate = useNavigate();
   const benefits = [
     "Certificação reconhecida no mercado",
     "Suporte personalizado durante todo o curso",
@@ -49,6 +51,7 @@ const CTASection = () => {
             <Button 
               size="lg" 
               className="btn-secondary text-lg gap-2 shadow-xl hover:scale-105 transition-transform"
+              onClick={() => navigate("/cursos")}
             >
               Matricule-se Agora
               <ArrowRight className="h-5 w-5" />
@@ -57,6 +60,10 @@ const CTASection = () => {
               size="lg" 
               variant="outline"
               className="text-lg bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
+              onClick={() => {
+                const footer = document.querySelector('footer');
+                footer?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               Fale com um Consultor
             </Button>
