@@ -32,12 +32,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/turmas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/cursos" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Turmas Disponíveis
                 </Link>
               </li>
               <li>
-                <Link to="/matriculas" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/auth" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Como se Matricular
                 </Link>
               </li>
@@ -54,22 +54,22 @@ const Footer = () => {
             <h3 className="font-semibold text-lg mb-4">Institucional</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/sobre" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Sobre Nós
                 </Link>
               </li>
               <li>
-                <Link to="/politica" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Política de Privacidade
                 </Link>
               </li>
               <li>
-                <Link to="/termos" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Termos de Uso
                 </Link>
               </li>
               <li>
-                <Link to="/acessibilidade" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Acessibilidade
                 </Link>
               </li>
@@ -96,16 +96,36 @@ const Footer = () => {
             
             {/* Social Media */}
             <div className="flex gap-3 mt-4">
-              <a href="#" className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors">
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors">
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
                 <Linkedin className="h-4 w-4" />
               </a>
-              <a href="#" className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors">
+              <a 
+                href="https://youtube.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-primary-foreground/10 p-2 rounded-lg hover:bg-secondary transition-colors"
+              >
                 <Youtube className="h-4 w-4" />
               </a>
             </div>
