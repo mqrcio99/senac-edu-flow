@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { BookOpen, Users, Award, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-education.jpg";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden">
       {/* Background with overlay */}
@@ -32,7 +34,11 @@ const HeroSection = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12 animate-fade-in-up">
-            <Button size="lg" className="btn-secondary text-lg gap-2 shadow-xl hover:scale-105 transition-transform">
+            <Button 
+              size="lg" 
+              className="btn-secondary text-lg gap-2 shadow-xl hover:scale-105 transition-transform"
+              onClick={() => navigate("/cursos")}
+            >
               Explorar Cursos
               <ArrowRight className="h-5 w-5" />
             </Button>
@@ -40,6 +46,10 @@ const HeroSection = () => {
               size="lg" 
               variant="outline" 
               className="text-lg bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
+              onClick={() => {
+                const coursesSection = document.querySelector('section.py-16');
+                coursesSection?.scrollIntoView({ behavior: 'smooth' });
+              }}
             >
               Saiba Mais
             </Button>
