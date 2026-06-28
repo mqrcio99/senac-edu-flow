@@ -1,4 +1,4 @@
-# 🎓 TecEdu - Sistema de Gestão de Cursos e Matrículas
+# 🎓 Senac - Sistema de Gestão de Cursos e Matrículas
 
 [![Deploy on Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)](https://senac-edu-flow.vercel.app/)
 [![Status](https://img.shields.io/badge/Status-Ativo-success?style=for-the-badge)](https://senac-edu-flow.vercel.app/)
@@ -12,7 +12,7 @@
 
 ## 📋 Sobre o Projeto
 
-O **TecEdu** é uma plataforma web desenvolvida para atender às necessidades da escola técnica fictícia TecEdu, permitindo a gestão completa de processos acadêmicos através de uma interface intuitiva e moderna.
+O **Senac** é uma plataforma web desenvolvida para atender às necessidades da escola técnica fictícia Senac, permitindo a gestão completa de processos acadêmicos através de uma interface intuitiva e moderna.
 
 ### 🎯 Objetivo
 
@@ -110,10 +110,10 @@ Desenvolver uma solução informatizada que permita:
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/tecedu.git
+git clone https://github.com/seu-usuario/senac.git
 
 # Entre na pasta do projeto
-cd tecedu
+cd senac
 
 # Instale as dependências
 npm install
