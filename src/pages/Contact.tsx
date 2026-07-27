@@ -31,7 +31,8 @@ const Contact = () => {
       return;
     }
     setSending(true);
-    const { error } = await supabase.from("contact_messages").insert(parsed.data);
+    const { name, email, subject, message } = parsed.data;
+    const { error } = await supabase.from("contact_messages").insert({ name, email, subject, message });
     setSending(false);
     if (error) {
       toast({ title: "Erro ao enviar", description: "Tente novamente em instantes.", variant: "destructive" });
