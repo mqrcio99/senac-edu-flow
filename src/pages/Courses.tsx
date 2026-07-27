@@ -1,175 +1,167 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CourseCard from "@/components/home/CourseCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { Search, Filter } from "lucide-react";
-import webDevImage from "@/assets/course-web-dev.jpg";
-import designImage from "@/assets/course-design.jpg";
-import marketingImage from "@/assets/course-marketing.jpg";
-import projectMgmtImage from "@/assets/course-project-management.jpg";
-import dataAnalysisImage from "@/assets/course-data-analysis.jpg";
-import englishImage from "@/assets/course-english.jpg";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { useCourses } from "@/hooks/useCourses";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 
 const Courses = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const { user, enroll } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const { data: courses, isLoading } = useCourses();
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [level, setLevel] = useState("all");
+  const [modality, setModality] = useState("all");
+  const [sort, setSort] = useState("popular");
 
-  const handleEnroll = (courseId: string, courseName: string) => {
-    if (!user) {
-      toast({
-        title: "Login necessário",
-        description: "Faça login para se matricular em um curso.",
-        variant: "destructive",
-      });
-      navigate("/auth");
-      return;
-    }
-
-    const success = enroll(courseId, courseName);
-    if (success) {
-      toast({
-        title: "Matrícula realizada!",
-        description: `Você foi matriculado no curso ${courseName}.`,
-      });
-    } else {
-      toast({
-        title: "Matrícula já existe",
-        description: "Você já está matriculado neste curso.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const allCourses = [
-    {
-      id: "1",
-      title: "Desenvolvimento Web Full Stack",
-      description: "Aprenda a criar aplicações web completas, do front-end ao back-end, com as tecnologias mais modernas do mercado.",
-      duration: "320h",
-      students: 1250,
-      rating: 4.8,
-      category: "Tecnologia",
-      image: webDevImage,
-    },
-    {
-      id: "2",
-      title: "Design Gráfico e UX/UI",
-      description: "Domine as ferramentas e técnicas para criar designs incríveis e experiências de usuário memoráveis.",
-      duration: "240h",
-      students: 890,
-      rating: 4.9,
-      category: "Design",
-      image: designImage,
-    },
-    {
-      id: "3",
-      title: "Marketing Digital Avançado",
-      description: "Estratégias completas de marketing digital, SEO, redes sociais e análise de dados para impulsionar negócios.",
-      duration: "180h",
-      students: 1500,
-      rating: 4.7,
-      category: "Marketing",
-      image: marketingImage,
-    },
-    {
-      id: "4",
-      title: "Gestão de Projetos Ágeis",
-      description: "Metodologias ágeis, Scrum, Kanban e ferramentas essenciais para gerenciar projetos com eficiência.",
-      duration: "160h",
-      students: 720,
-      rating: 4.8,
-      category: "Gestão",
-      image: projectMgmtImage,
-    },
-    {
-      id: "5",
-      title: "Análise de Dados e Business Intelligence",
-      description: "Transforme dados em insights valiosos. Aprenda SQL, Python, visualização de dados e mais.",
-      duration: "280h",
-      students: 980,
-      rating: 4.9,
-      category: "Dados",
-      image: dataAnalysisImage,
-    },
-    {
-      id: "6",
-      title: "Inglês para Negócios",
-      description: "Desenvolva fluência em inglês focado no ambiente corporativo e comunicação profissional.",
-      duration: "200h",
-      students: 1100,
-      rating: 4.6,
-      category: "Idiomas",
-      image: englishImage,
-    },
-  ];
-
-  const filteredCourses = allCourses.filter(course =>
-    course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    course.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const categories = useMemo(
+    () => Array.from(new Set((courses ?? []).map((c) => c.category))).sort(),
+    [courses]
   );
+  const levels = useMemo(
+    () => Array.from(new Set((courses ?? []).map((c) => c.level))).sort(),
+    [courses]
+  );
+  const modalities = useMemo(
+    () => Array.from(new Set((courses ?? []).map((c) => c.modality))).sort(),
+    [courses]
+  );
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    const list = (courses ?? []).filter((c) => {
+      const matchesTerm =
+        !term ||
+        c.title.toLowerCase().includes(term) ||
+        c.description.toLowerCase().includes(term) ||
+        c.category.toLowerCase().includes(term);
+      return (
+        matchesTerm &&
+        (category === "all" || c.category === category) &&
+        (level === "all" || c.level === level) &&
+        (modality === "all" || c.modality === modality)
+      );
+    });
+
+    const sorted = [...list];
+    if (sort === "popular") sorted.sort((a, b) => b.students_count - a.students_count);
+    if (sort === "rating") sorted.sort((a, b) => b.rating - a.rating);
+    if (sort === "price-asc") sorted.sort((a, b) => a.price - b.price);
+    if (sort === "price-desc") sorted.sort((a, b) => b.price - a.price);
+    if (sort === "duration") sorted.sort((a, b) => a.duration_hours - b.duration_hours);
+    return sorted;
+  }, [courses, search, category, level, modality, sort]);
+
+  const hasFilters = search || category !== "all" || level !== "all" || modality !== "all";
+
+  const clearFilters = () => {
+    setSearch("");
+    setCategory("all");
+    setLevel("all");
+    setModality("all");
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-1 pt-24 lg:pt-32 pb-16">
         <div className="container mx-auto px-4">
-          {/* Page Header */}
-          <div className="text-center mb-12 animate-fade-in-up">
-            <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">
-              Catálogo de Cursos
-            </h1>
+          <div className="text-center mb-10 animate-fade-in-up">
+            <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-4">Catálogo de Cursos</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Explore nossa seleção completa de cursos profissionalizantes
             </p>
           </div>
 
-          {/* Search and Filter */}
-          <div className="flex flex-col md:flex-row gap-4 mb-12 max-w-4xl mx-auto">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input 
-                placeholder="Buscar cursos..." 
+          <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-8 shadow-sm">
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por curso, área ou palavra-chave..."
                 className="pl-10 h-12"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                aria-label="Buscar cursos"
               />
             </div>
-            <Button variant="outline" className="gap-2 h-12">
-              <Filter className="h-4 w-4" />
-              Filtros
-            </Button>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger aria-label="Categoria"><SelectValue placeholder="Categoria" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as áreas</SelectItem>
+                  {categories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Select value={level} onValueChange={setLevel}>
+                <SelectTrigger aria-label="Nível"><SelectValue placeholder="Nível" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os níveis</SelectItem>
+                  {levels.map((l) => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Select value={modality} onValueChange={setModality}>
+                <SelectTrigger aria-label="Modalidade"><SelectValue placeholder="Modalidade" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as modalidades</SelectItem>
+                  {modalities.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Select value={sort} onValueChange={setSort}>
+                <SelectTrigger aria-label="Ordenar"><SelectValue placeholder="Ordenar" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="popular">Mais populares</SelectItem>
+                  <SelectItem value="rating">Melhor avaliados</SelectItem>
+                  <SelectItem value="price-asc">Menor preço</SelectItem>
+                  <SelectItem value="price-desc">Maior preço</SelectItem>
+                  <SelectItem value="duration">Menor duração</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-center justify-between mt-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4" />
+                {isLoading ? "Carregando..." : `${filtered.length} curso(s) encontrado(s)`}
+              </span>
+              {hasFilters && (
+                <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-1">
+                  <X className="h-4 w-4" /> Limpar filtros
+                </Button>
+              )}
+            </div>
           </div>
 
-          {/* Courses Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {filteredCourses.map((course, index) => (
-              <div 
-                key={course.id} 
-                className="animate-fade-in-up flex flex-col"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <CourseCard {...course} />
-                <Button 
-                  onClick={() => handleEnroll(course.id, course.title)}
-                  className="mt-4 w-full btn-secondary"
-                >
-                  Matricular-se
-                </Button>
-              </div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-[420px] rounded-xl" />)}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-lg text-muted-foreground mb-4">Nenhum curso encontrado com esses filtros.</p>
+              <Button onClick={clearFilters}>Limpar filtros</Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {filtered.map((course, index) => (
+                <div key={course.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <CourseCard course={course} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
