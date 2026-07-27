@@ -2,78 +2,12 @@ import CourseCard from "./CourseCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import webDevImage from "@/assets/course-web-dev.jpg";
-import designImage from "@/assets/course-design.jpg";
-import marketingImage from "@/assets/course-marketing.jpg";
-import projectMgmtImage from "@/assets/course-project-management.jpg";
-import dataAnalysisImage from "@/assets/course-data-analysis.jpg";
-import englishImage from "@/assets/course-english.jpg";
+import { useCourses } from "@/hooks/useCourses";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CoursesSection = () => {
   const navigate = useNavigate();
-  
-  const courses = [
-    {
-      id: "1",
-      title: "Desenvolvimento Web Full Stack",
-      description: "Aprenda a criar aplicações web completas, do front-end ao back-end, com as tecnologias mais modernas do mercado.",
-      duration: "320h",
-      students: 1250,
-      rating: 4.8,
-      category: "Tecnologia",
-      image: webDevImage,
-    },
-    {
-      id: "2",
-      title: "Design Gráfico e UX/UI",
-      description: "Domine as ferramentas e técnicas para criar designs incríveis e experiências de usuário memoráveis.",
-      duration: "240h",
-      students: 890,
-      rating: 4.9,
-      category: "Design",
-      image: designImage,
-    },
-    {
-      id: "3",
-      title: "Marketing Digital Avançado",
-      description: "Estratégias completas de marketing digital, SEO, redes sociais e análise de dados para impulsionar negócios.",
-      duration: "180h",
-      students: 1500,
-      rating: 4.7,
-      category: "Marketing",
-      image: marketingImage,
-    },
-    {
-      id: "4",
-      title: "Gestão de Projetos Ágeis",
-      description: "Metodologias ágeis, Scrum, Kanban e ferramentas essenciais para gerenciar projetos com eficiência.",
-      duration: "160h",
-      students: 720,
-      rating: 4.8,
-      category: "Gestão",
-      image: projectMgmtImage,
-    },
-    {
-      id: "5",
-      title: "Análise de Dados e Business Intelligence",
-      description: "Transforme dados em insights valiosos. Aprenda SQL, Python, visualização de dados e mais.",
-      duration: "280h",
-      students: 980,
-      rating: 4.9,
-      category: "Dados",
-      image: dataAnalysisImage,
-    },
-    {
-      id: "6",
-      title: "Inglês para Negócios",
-      description: "Desenvolva fluência em inglês focado no ambiente corporativo e comunicação profissional.",
-      duration: "200h",
-      students: 1100,
-      rating: 4.6,
-      category: "Idiomas",
-      image: englishImage,
-    },
-  ];
+  const { data: courses, isLoading } = useCourses();
 
   return (
     <section className="py-12 sm:py-16 lg:py-24 bg-muted/30">
@@ -91,24 +25,17 @@ const CoursesSection = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
-          {courses.map((course, index) => (
-            <div 
-              key={index} 
-              className="animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <CourseCard {...course} />
-            </div>
-          ))}
+          {isLoading
+            ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-[420px] rounded-xl" />)
+            : (courses ?? []).slice(0, 6).map((course, index) => (
+                <div key={course.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <CourseCard course={course} />
+                </div>
+              ))}
         </div>
 
         <div className="text-center">
-          <Button 
-            size="lg" 
-            variant="outline" 
-            className="gap-2 group w-full sm:w-auto"
-            onClick={() => navigate("/cursos")}
-          >
+          <Button size="lg" variant="outline" className="gap-2 group w-full sm:w-auto" onClick={() => navigate("/cursos")}>
             Ver Todos os Cursos
             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
           </Button>
