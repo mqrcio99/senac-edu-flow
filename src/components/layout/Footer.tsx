@@ -32,13 +32,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/cursos" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  Turmas Disponíveis
+                <Link to="/faq" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  Como se Matricular
                 </Link>
               </li>
               <li>
-                <Link to="/auth" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  Como se Matricular
+                <Link to="/contato" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  Fale Conosco
                 </Link>
               </li>
               <li>
@@ -54,23 +54,23 @@ const Footer = () => {
             <h3 className="font-semibold text-sm sm:text-lg mb-3 sm:mb-4">Institucional</h3>
             <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
               <li>
-                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                <Link to="/sobre" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Sobre Nós
                 </Link>
               </li>
               <li>
-                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  Política de Privacidade
+                <Link to="/faq" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  Perguntas Frequentes
                 </Link>
               </li>
               <li>
-                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  Termos de Uso
+                <Link to="/contato" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  Contato
                 </Link>
               </li>
               <li>
-                <Link to="/" className="text-primary-foreground/80 hover:text-secondary transition-colors">
-                  Acessibilidade
+                <Link to="/dashboard" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  Área do Aluno
                 </Link>
               </li>
             </ul>

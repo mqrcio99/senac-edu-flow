@@ -1,124 +1,114 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import type { Session, User } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
-interface User {
+export interface Profile {
   id: string;
   name: string;
-  email: string;
-  cpf: string;
-  phone: string;
-  role: 'student' | 'admin';
+  cpf: string | null;
+  phone: string | null;
+  bio: string | null;
+  avatar_url: string | null;
 }
 
-interface Enrollment {
-  id: string;
-  userId: string;
-  courseId: string;
-  courseName: string;
-  enrolledAt: string;
-  status: 'active' | 'completed' | 'cancelled';
+interface SignUpData {
+  email: string;
+  password: string;
+  name: string;
+  cpf: string;
+  phone: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  users: User[];
-  enrollments: Enrollment[];
-  login: (email: string, password: string) => boolean;
-  register: (data: Omit<User, 'id' | 'role'> & { password: string }) => boolean;
-  logout: () => void;
-  enroll: (courseId: string, courseName: string) => boolean;
-  getMyEnrollments: () => Enrollment[];
+  session: Session | null;
+  profile: Profile | null;
+  isAdmin: boolean;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (data: SignUpData) => Promise<{ error: string | null }>;
+  signOut: () => Promise<void>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const translateError = (message: string) => {
+  if (message.includes('Invalid login credentials')) return 'E-mail ou senha incorretos.';
+  if (message.includes('User already registered')) return 'Este e-mail já está cadastrado.';
+  if (message.includes('Password should be at least')) return 'A senha deve ter no mínimo 6 caracteres.';
+  if (message.includes('Email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+  return message;
+};
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: 'Admin Demo',
-      email: 'admin@senac.com',
-      cpf: '000.000.000-00',
-      phone: '(51) 99999-9999',
-      role: 'admin'
-    }
-  ]);
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-  const [passwords] = useState<Record<string, string>>({
-    'admin@senac.com': 'admin123'
-  });
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email: string, password: string): boolean => {
-    const foundUser = users.find(u => u.email === email);
-    if (foundUser && passwords[email] === password) {
-      setUser(foundUser);
-      return true;
-    }
-    return false;
+  const loadUserData = useCallback(async (userId: string) => {
+    const [{ data: profileData }, { data: roles }] = await Promise.all([
+      supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+      supabase.from('user_roles').select('role').eq('user_id', userId),
+    ]);
+    setProfile((profileData as Profile) ?? null);
+    setIsAdmin(!!roles?.some((r) => r.role === 'admin'));
+  }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      setUser(newSession?.user ?? null);
+      if (newSession?.user) {
+        setTimeout(() => { loadUserData(newSession.user.id); }, 0);
+      } else {
+        setProfile(null);
+        setIsAdmin(false);
+      }
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session: existing } }) => {
+      setSession(existing);
+      setUser(existing?.user ?? null);
+      if (existing?.user) loadUserData(existing.user.id);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [loadUserData]);
+
+  const signIn: AuthContextType['signIn'] = async (email, password) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error ? translateError(error.message) : null };
   };
 
-  const register = (data: Omit<User, 'id' | 'role'> & { password: string }): boolean => {
-    if (users.find(u => u.email === data.email || u.cpf === data.cpf)) {
-      return false;
-    }
-
-    const newUser: User = {
-      id: Date.now().toString(),
-      name: data.name,
-      email: data.email,
-      cpf: data.cpf,
-      phone: data.phone,
-      role: 'student'
-    };
-
-    setUsers([...users, newUser]);
-    passwords[data.email] = data.password;
-    setUser(newUser);
-    return true;
+  const signUp: AuthContextType['signUp'] = async ({ email, password, name, cpf, phone }) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: { name, cpf, phone },
+      },
+    });
+    return { error: error ? translateError(error.message) : null };
   };
 
-  const logout = () => {
-    setUser(null);
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setProfile(null);
+    setIsAdmin(false);
   };
 
-  const enroll = (courseId: string, courseName: string): boolean => {
-    if (!user) return false;
-
-    const existingEnrollment = enrollments.find(
-      e => e.userId === user.id && e.courseId === courseId
-    );
-
-    if (existingEnrollment) return false;
-
-    const newEnrollment: Enrollment = {
-      id: Date.now().toString(),
-      userId: user.id,
-      courseId,
-      courseName,
-      enrolledAt: new Date().toLocaleDateString('pt-BR'),
-      status: 'active'
-    };
-
-    setEnrollments([...enrollments, newEnrollment]);
-    return true;
-  };
-
-  const getMyEnrollments = (): Enrollment[] => {
-    if (!user) return [];
-    return enrollments.filter(e => e.userId === user.id);
+  const refreshProfile = async () => {
+    if (user) await loadUserData(user.id);
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      users, 
-      enrollments, 
-      login, 
-      register, 
-      logout, 
-      enroll,
-      getMyEnrollments 
-    }}>
+    <AuthContext.Provider value={{ user, session, profile, isAdmin, loading, signIn, signUp, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
