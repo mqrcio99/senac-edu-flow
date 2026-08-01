@@ -37,6 +37,11 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/quiz" className="text-primary-foreground/80 hover:text-secondary transition-colors">
+                  Quiz Vocacional
+                </Link>
+              </li>
+              <li>
                 <Link to="/contato" className="text-primary-foreground/80 hover:text-secondary transition-colors">
                   Fale Conosco
                 </Link>
